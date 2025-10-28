@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-#define DEBUG
+//#define DEBUG
 
 typedef unsigned char cell_t;
 cell_t **prev, **next, **tmp;
@@ -62,9 +62,10 @@ int adjacent_to(cell_t **board, int size, int i, int j)
 	
 	return count;
 }
-void play(cell_t **board, cell_t **newboard,int i, int size)
+void play(cell_t **board, cell_t **newboard,long int i, int size)
 { // funcao para utilizar na thread
-	int j, a;
+	int a;
+	long int j;
 	/* for each cell, apply the rules of Life */
 	//for (i = 0; i < size; i++)
 		for (j = 0; j < size; j++)
@@ -139,7 +140,7 @@ void read_file(FILE *f, cell_t **board, int size)
 
 int main()
 {
-	short int nthreads=50;
+	short int nthreads=4;
 	int size, steps;
 	FILE *f;
 	f = stdin;
@@ -159,40 +160,38 @@ int main()
 
 	for (i = 0; i < steps; i++)
 	{
-		#ifdef DEBUG
-			printf("%d ----------\n", i);
-			print(next, size);
-		#endif
 		for (short int k = 0; k < nthreads; k++)
 		{
-			//printf("Criando a thread %d\n", k);
 			t_args *args = (t_args *)malloc(sizeof(t_args));
 			if (args == NULL)
         	{
-            	fprintf(stderr, "ERRO de criacao da estrutura de argumentos\n");
-            	return 2;
+				fprintf(stderr, "ERRO de criacao da estrutura de argumentos\n");
+            	return 1;
         	}
 			args->id = k;
 			args->nthreads = nthreads;
 			args->dim = size;
-			printf("Criando a thread %d\n", args->id);
+			//printf("Criando a thread %d\n", args->id);
 			pthread_create(&tid[k], NULL, funcao, (void *)args);
 		}
-
 		for (short int k = 0; k < nthreads; k++)
 		{
 			if (pthread_join(tid[k], NULL))
 			{
 				fprintf(stderr, "ERRO na espera de threads");
-				return 3;
+				return 2;
 			}
 		}
+		#ifdef DEBUG
+			printf("%d ----------\n", i);
+			print(next, size);
+		#endif
 		tmp = prev;
 		prev = next;
 		next = tmp;
 	}
 
-	//print(prev, size);
+	print(prev, size);
 	free_board(prev, size);
 	free_board(next, size);
 }
