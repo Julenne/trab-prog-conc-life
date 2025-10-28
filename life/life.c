@@ -81,7 +81,7 @@ void play(cell_t **board, cell_t **newboard,int i, int size)
 		}
 }
 
-void *f(void *args)
+void *funcao(void *args)
 {
 	t_args *arg = (t_args *)args;
 	long int fatia, ini, fim;
@@ -94,12 +94,7 @@ void *f(void *args)
 
 	for (long int i = ini; i < fim; i++)
 	{
-
 		play(prev, next,i, arg->dim);
-		// processa a linha i do tabuleiro
-		//lock
-
-		//unlock
 	}
 
 	free(args); // libera a memoria alocada na main
@@ -144,7 +139,7 @@ void read_file(FILE *f, cell_t **board, int size)
 
 int main()
 {
-	short int nthreads=4;
+	short int nthreads=50;
 	int size, steps;
 	FILE *f;
 	f = stdin;
@@ -168,27 +163,33 @@ int main()
 			printf("%d ----------\n", i);
 			print(next, size);
 		#endif
-		for (short int i = 0; i < nthreads; i++)
+		for (short int k = 0; k < nthreads; k++)
 		{
+			//printf("Criando a thread %d\n", k);
 			t_args *args = (t_args *)malloc(sizeof(t_args));
-			args->id = i;
+			if (args == NULL)
+        	{
+            	fprintf(stderr, "ERRO de criacao da estrutura de argumentos\n");
+            	return 2;
+        	}
+			args->id = k;
 			args->nthreads = nthreads;
 			args->dim = size;
-
-			pthread_create(&tid[i], NULL, f, (void *)args);
+			printf("Criando a thread %d\n", args->id);
+			pthread_create(&tid[k], NULL, funcao, (void *)args);
 		}
 
-		for (short int i = 0; i < nthreads; i++)
+		for (short int k = 0; k < nthreads; k++)
 		{
-			if (pthread_join(tid[i], NULL))
+			if (pthread_join(tid[k], NULL))
 			{
 				fprintf(stderr, "ERRO na espera de threads");
 				return 3;
 			}
 		}
-		next = prev;
-		tmp = next;
-		prev = tmp;
+		tmp = prev;
+		prev = next;
+		next = tmp;
 	}
 
 	//print(prev, size);
