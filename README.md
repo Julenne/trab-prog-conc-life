@@ -1,6 +1,6 @@
 # trab-prog-conc-life
 
-### Para rodar (concorrente):
+### Para rodar:
 
 ```
 $make

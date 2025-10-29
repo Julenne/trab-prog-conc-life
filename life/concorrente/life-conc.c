@@ -17,7 +17,7 @@
 #include <pthread.h>
 #include "timer.h"
 
-//#define DEBUG
+// #define DEBUG
 
 typedef unsigned char cell_t;
 cell_t **prev, **next, **tmp;
@@ -35,7 +35,7 @@ cell_t **allocate_board(int size)
 	cell_t **board = (cell_t **)malloc(sizeof(cell_t *) * size);
 	int i;
 	for (i = 0; i < size; i++)
-	board[i] = (cell_t *)malloc(sizeof(cell_t) * size);
+		board[i] = (cell_t *)malloc(sizeof(cell_t) * size);
 	return board;
 }
 
@@ -43,7 +43,7 @@ void free_board(cell_t **board, int size)
 {
 	int i;
 	for (i = 0; i < size; i++)
-	free(board[i]);
+		free(board[i]);
 	free(board);
 }
 
@@ -51,36 +51,36 @@ void free_board(cell_t **board, int size)
 int adjacent_to(cell_t **board, int size, int i, int j)
 {
 	int k, l, count = 0;
-	
+
 	int sk = (i > 0) ? i - 1 : i;
 	int ek = (i + 1 < size) ? i + 1 : i;
 	int sl = (j > 0) ? j - 1 : j;
 	int el = (j + 1 < size) ? j + 1 : j;
-	
+
 	for (k = sk; k <= ek; k++)
-	for (l = sl; l <= el; l++)
-	count += board[k][l];
+		for (l = sl; l <= el; l++)
+			count += board[k][l];
 	count -= board[i][j];
-	
+
 	return count;
 }
-void play(cell_t **board, cell_t **newboard,long int i, int size)
+void play(cell_t **board, cell_t **newboard, long int i, int size)
 { // funcao para utilizar na thread
 	int a;
 	long int j;
 	/* for each cell, apply the rules of Life */
-		for (j = 0; j < size; j++)
-		{
-			a = adjacent_to(board, size, i, j);
-			if (a == 2)
-				newboard[i][j] = board[i][j];
-			if (a == 3)
-				newboard[i][j] = 1;
-			if (a < 2)
-				newboard[i][j] = 0;
-			if (a > 3)
-				newboard[i][j] = 0;
-		}
+	for (j = 0; j < size; j++)
+	{
+		a = adjacent_to(board, size, i, j);
+		if (a == 2)
+			newboard[i][j] = board[i][j];
+		if (a == 3)
+			newboard[i][j] = 1;
+		if (a < 2)
+			newboard[i][j] = 0;
+		if (a > 3)
+			newboard[i][j] = 0;
+	}
 }
 
 void *funcao(void *args)
@@ -96,7 +96,7 @@ void *funcao(void *args)
 
 	for (long int i = ini; i < fim; i++)
 	{
-		play(prev, next,i, arg->dim);
+		play(prev, next, i, arg->dim);
 	}
 
 	free(args); // libera a memoria alocada na main
@@ -166,14 +166,14 @@ int main()
 		{
 			t_args *args = (t_args *)malloc(sizeof(t_args));
 			if (args == NULL)
-        	{
+			{
 				fprintf(stderr, "ERRO de criacao da estrutura de argumentos\n");
-            	return 1;
-        	}
+				return 1;
+			}
 			args->id = k;
 			args->nthreads = nthreads;
 			args->dim = size;
-			//printf("Criando a thread %d\n", args->id);
+			// printf("Criando a thread %d\n", args->id);
 			pthread_create(&tid[k], NULL, funcao, (void *)args);
 		}
 		for (short int k = 0; k < nthreads; k++)
@@ -184,17 +184,17 @@ int main()
 				return 2;
 			}
 		}
-		#ifdef DEBUG
-			printf("%d ----------\n", i);
-			print(next, size);
-		#endif
+#ifdef DEBUG
+		printf("%d ----------\n", i);
+		print(next, size);
+#endif
 		tmp = prev;
 		prev = next;
 		next = tmp;
 	}
 
 	print(prev, size);
-	
+
 	GET_TIME(finish);
 	elapsed = finish - start;
 	printf("Tempo de execucao: %.24f\n", elapsed);

@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include "timer.h"
 typedef unsigned char cell_t; 
+cell_t **prev, **next, **tmp;
 double start, finish, elapsed;
 
 cell_t ** allocate_board (int size) {
@@ -102,11 +103,10 @@ int main () {
   f = stdin;
 	GET_TIME(start);
 	fscanf(f,"%d %d", &size, &steps);
-	cell_t ** prev = allocate_board (size);
+	prev = allocate_board (size);
 	read_file (f, prev,size);
 	fclose(f);
-	cell_t ** next = allocate_board (size);
-	cell_t ** tmp;
+	next = allocate_board (size);
 	int i,j;
 	#ifdef DEBUG
 	printf("Initial \n");
