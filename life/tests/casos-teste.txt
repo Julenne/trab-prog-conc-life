@@ -15,20 +15,20 @@ Threads: 4;
 Caso 7 - Tamanho do Tabuleiro: 100; Número de Gerações: 10; Número de
 Threads: 2;
 Caso 8 - Tamanho do Tabuleiro: 100; Número de Gerações: 10; Número de
-Threads: 2;
-Caso 9 - Tamanho do Tabuleiro: 100; Número de Gerações: 10; Número de
-Threads: 2;
-Caso 10 - Tamanho do Tabuleiro: 100; Número de Gerações: 10; Número de
 Threads: 4;
-Caso 11 - Tamanho do Tabuleiro: 500; Número de Gerações: 700; Número de
+Caso 9 - Tamanho do Tabuleiro: 500; Número de Gerações: 700; Número de
 Threads: 2;
-Caso 12 - Tamanho do Tabuleiro: 500; Número de Gerações: 700; Número de
+Caso 10 - Tamanho do Tabuleiro: 500; Número de Gerações: 700; Número de
 Threads: 4;
-Caso 13 - Tamanho do Tabuleiro: 1000; Número de Gerações: 15; Número de
+Caso 11 - Tamanho do Tabuleiro: 1000; Número de Gerações: 15; Número de
 Threads: 2;
-Caso 14 - Tamanho do Tabuleiro: 1000; Número de Gerações: 30; Número de
+Caso 12 - Tamanho do Tabuleiro: 1000; Número de Gerações: 30; Número de
 Threads: 4;
-Caso 15 - Tamanho do Tabuleiro: 2000; Número de Gerações: 13; Número de
+Caso 13 - Tamanho do Tabuleiro: 2000; Número de Gerações: 13; Número de
 Threads: 2;
-Caso 16 - Tamanho do Tabuleiro: 2000; Número de Gerações: 20; Número de
+Caso 14 - Tamanho do Tabuleiro: 2000; Número de Gerações: 20; Número de
 Threads: 2;
+Caso 15 - Tamanho do Tabuleiro: 5000; Número de Gerações: 500; Número de
+Threads: 4;
+Caso 16 - Tamanho do Tabuleiro: 5000; Número de Gerações: 500; Número de
+Threads: 8;
