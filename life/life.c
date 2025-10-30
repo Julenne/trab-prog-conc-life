@@ -45,7 +45,6 @@ void free_board (cell_t ** board, int size) {
 	free(board);
 }
 
-
 /* return the number of on cells adjacent to the i,j cell */
 int adjacent_to (cell_t ** board, int size, int i, int j) {
 	int	k, l, count=0;
@@ -147,14 +146,13 @@ void read_file (FILE * f, cell_t ** board, int size) {
 	}
 }
 
-
-
-
 int main () {
 	short int nthreads;
 	int size, steps;
 	FILE    *f;
   	f = stdin;
+	double execution_time_seq, execution_time_conc;
+	double aceleracao, eficiencia;
 	
 	fscanf(f,"%d %d %hi", &size, &steps, &nthreads);
 	prev = allocate_board (size);
@@ -192,6 +190,10 @@ int main () {
 
 	GET_TIME(finish);
 	elapsed = finish - start;
+	execution_time_seq = elapsed;
+	printf("Tamanho do tabuleiro: %d\n", size);
+	printf("Numero de passos: %d\n", steps);
+	printf("Numero de threads: %d\n", nthreads);
 	printf("Tempo de execucao (SEQUENCIAL): %.24f\n", elapsed);
 	
 	free_board(prev, size);
@@ -199,7 +201,6 @@ int main () {
 	//===================fim versao sequencial==========================
 
 	//========================versao concorrente==========================
-	//fscanf(f,"%d %d %hi", &size, &steps, &nthreads);
 	pthread_t tid[nthreads];
 	GET_TIME(start);
 	#ifdef DEBUG
@@ -245,11 +246,15 @@ int main () {
 
 	GET_TIME(finish);
 	elapsed = finish - start;
+	execution_time_conc = elapsed;
 	printf("Tempo de execucao (CONCORRENTE): %.24f\n", elapsed);
 
+	aceleracao = execution_time_seq / execution_time_conc;
+	eficiencia = aceleracao / nthreads;
+	printf("Aceleracao: %.2f\n", aceleracao);
+	printf("Eficiencia: %.2f\n", eficiencia);
 	free_board(prev2, size);
 	free_board(next2, size);
 	
 	//========================fim versao concorrente==========================
-
 }
