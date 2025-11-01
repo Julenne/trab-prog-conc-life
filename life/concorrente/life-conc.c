@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include "timer.h"
-
+#include <math.h>
 // #define DEBUG
 
 typedef unsigned char cell_t;
@@ -25,9 +25,11 @@ double start, finish, elapsed;
 
 typedef struct
 {
-	short int id;		// identificador da thread na aplicaco
-	short int nthreads; // quantidade de threads
-	long int dim;		// numero de linhas do tabuleiro
+	short int id;			   // identificador da thread na aplicaco
+	short int nthreads;		   // quantidade de threads
+	long int dim;			   // tamanho do tabuleiro
+	long int ini_lin, fim_lin; // inicio e fim de linhas do tabuleiro
+	long int ini_col, fim_col; // inicio e fim de colunas do tabuleiro
 } t_args;
 
 cell_t **allocate_board(int size)
@@ -64,42 +66,33 @@ int adjacent_to(cell_t **board, int size, int i, int j)
 
 	return count;
 }
-void play(cell_t **board, cell_t **newboard, long int i, int size)
+void play(cell_t **board, cell_t **newboard, long int i, long int j, int size)
 { // funcao para utilizar na thread
-	int a;
-	long int j;
-	/* for each cell, apply the rules of Life */
-	for (j = 0; j < size; j++)
-	{
-		a = adjacent_to(board, size, i, j);
-		if (a == 2)
-			newboard[i][j] = board[i][j];
-		if (a == 3)
-			newboard[i][j] = 1;
-		if (a < 2)
-			newboard[i][j] = 0;
-		if (a > 3)
-			newboard[i][j] = 0;
-	}
+	int a = adjacent_to(board, size, i, j);
+
+	if (a == 2)
+		newboard[i][j] = board[i][j];
+	if (a == 3)
+		newboard[i][j] = 1;
+	if (a < 2)
+		newboard[i][j] = 0;
+	if (a > 3)
+		newboard[i][j] = 0;
 }
 
 void *funcao(void *args)
 {
 	t_args *arg = (t_args *)args;
-	long int fatia, ini, fim;
-	fatia = arg->dim / arg->nthreads; // quantidade de elementos que a thread vai processar
-	ini = arg->id * fatia;
-	fim = ini + fatia;
 
-	if (arg->id == arg->nthreads - 1)
-		fim = arg->dim;
-
-	for (long int i = ini; i < fim; i++)
+	for (long int i = arg->ini_lin; i < arg->fim_lin; i++)
 	{
-		play(prev, next, i, arg->dim);
+		for (long int j = arg->ini_col; j < arg->fim_col; j++)
+		{
+			play(prev, next, i, j, arg->dim);
+		}
 	}
 
-	free(args); // libera a memoria alocada na main
+	free(arg); // libera a memoria alocada na main
 	pthread_exit(NULL);
 }
 
@@ -110,6 +103,7 @@ void print(cell_t **board, int size)
 	/* for each row */
 	for (j = 0; j < size; j++)
 	{
+		printf("%d ", j);
 		/* print each column position... */
 		for (i = 0; i < size; i++)
 			printf("%c", board[i][j] ? 'x' : ' ');
@@ -162,19 +156,40 @@ int main()
 
 	for (i = 0; i < steps; i++)
 	{
-		for (short int k = 0; k < nthreads; k++)
+		int vertical = sqrt(nthreads); // qtd de blocos na vertical
+		int horizontal = (nthreads + vertical - 1) / vertical; // qtd de blocos na horizontal
+		int bloco_lin = (size + vertical - 1) / vertical; // num de linhas do bloco
+		int bloco_col = (size + horizontal - 1)/ horizontal; //num de colunas do bloco
+
+		int id = 0;
+		for (short int k = 0; k < vertical && id < nthreads; k++) 
 		{
-			t_args *args = (t_args *)malloc(sizeof(t_args));
-			if (args == NULL)
+			for (short int y = 0; y < horizontal && id < nthreads; y++) 
 			{
-				fprintf(stderr, "ERRO de criacao da estrutura de argumentos\n");
-				return 1;
+				/* code */
+				
+				t_args *args = (t_args *)malloc(sizeof(t_args));
+				if (args == NULL)
+				{
+					fprintf(stderr, "ERRO de criacao da estrutura de argumentos\n");
+					return 1;
+				}
+				args->id = id;
+				args->nthreads = nthreads;
+				args->dim = size;
+
+				args->ini_lin = k*bloco_lin;
+				args->fim_lin = (k+1)*bloco_lin;
+				if(args->fim_lin > size) args->fim_lin = size;
+				
+				args->ini_col = y*bloco_col;
+				args->fim_col = (y+1)*bloco_col;
+				if(args->fim_col > size) args->fim_col = size;
+
+				// printf("Criando a thread %d\n", args->id);
+				pthread_create(&tid[id], NULL, funcao, (void *)args);
+				id++;
 			}
-			args->id = k;
-			args->nthreads = nthreads;
-			args->dim = size;
-			// printf("Criando a thread %d\n", args->id);
-			pthread_create(&tid[k], NULL, funcao, (void *)args);
 		}
 		for (short int k = 0; k < nthreads; k++)
 		{
@@ -192,13 +207,15 @@ int main()
 		prev = next;
 		next = tmp;
 	}
-
+	GET_TIME(finish);
+	
 	print(prev, size);
 
-	GET_TIME(finish);
+	
 	elapsed = finish - start;
 	printf("Tempo de execucao: %.24f\n", elapsed);
 
 	free_board(prev, size);
 	free_board(next, size);
+	
 }
