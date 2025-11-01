@@ -124,12 +124,12 @@ int main () {
 		next = prev;
 		prev = tmp;
 	}
-	print (prev,size);
+	//print (prev,size);
 
 	GET_TIME(finish);
 	elapsed = finish - start;
-	printf("Tempo de execucao: %.24f\n", elapsed);
-	
+	printf("Tempo (seq): %.24f\n", elapsed);
+
 	free_board(prev,size);
 	free_board(next,size);
 }
