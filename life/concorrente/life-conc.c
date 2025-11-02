@@ -209,10 +209,10 @@ int main()
 	}
 	GET_TIME(finish);
 	
-	//print(prev, size);
+	print(prev, size);
 
 	elapsed = finish - start;
-	printf("Tempo (conc): %.24f\n", elapsed);
+	//printf("Tempo (conc): %.24f\n", elapsed);
 
 	free_board(prev, size);
 	free_board(next, size);

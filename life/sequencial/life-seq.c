@@ -71,6 +71,7 @@ void print (cell_t ** board, int size) {
 	/* for each row */
 	for (j=0; j<size; j++) {
 		/* print each column position... */
+		printf("%d ", j);
 		for (i=0; i<size; i++) 
 			printf ("%c", board[i][j] ? 'x' : ' ');
 		/* followed by a carriage return */
@@ -124,11 +125,12 @@ int main () {
 		next = prev;
 		prev = tmp;
 	}
-	//print (prev,size);
-
 	GET_TIME(finish);
+	
+	print (prev,size);
+
 	elapsed = finish - start;
-	printf("Tempo (seq): %.24f\n", elapsed);
+	//printf("Tempo (seq): %.24f\n", elapsed);
 
 	free_board(prev,size);
 	free_board(next,size);

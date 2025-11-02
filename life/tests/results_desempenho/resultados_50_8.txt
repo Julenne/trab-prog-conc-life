@@ -1,0 +1,106 @@
+50 GERACOES E 8 THREADS
+============================================
+Sat Nov  1 21:19:33 -03 2025
+
+>>> Board: board_10.in
+
+>>> Executando com tests/board_10.in (1)
+Tempo (seq): 0.000053882598876953125000
+Tempo (conc): 0.003657102584838867187500
+
+>>> Executando com tests/board_10.in (2)
+Tempo (seq): 0.000040054321289062500000
+Tempo (conc): 0.003587961196899414062500
+
+>>> Executando com tests/board_10.in (3)
+Tempo (seq): 0.000044107437133789062500
+Tempo (conc): 0.003623962402343750000000
+
+>>> Executando com tests/board_10.in (4)
+Tempo (seq): 0.000036954879760742187500
+Tempo (conc): 0.003564834594726562500000
+
+>>> Executando com tests/board_10.in (5)
+Tempo (seq): 0.000034093856811523437500
+Tempo (conc): 0.003571987152099609375000
+
+Médias para board_10.in -> Sequencial: 0.00004181861877441406385525 s | Concorrente: 0.00360116958618164053826383 s
+--------------------------------------------
+
+>>> Board: board_100.in
+
+>>> Executando com tests/board_100.in (1)
+Tempo (seq): 0.002677917480468750000000
+Tempo (conc): 0.003509044647216796875000
+
+>>> Executando com tests/board_100.in (2)
+Tempo (seq): 0.002557992935180664062500
+Tempo (conc): 0.003543853759765625000000
+
+>>> Executando com tests/board_100.in (3)
+Tempo (seq): 0.002573966979980468750000
+Tempo (conc): 0.003705978393554687500000
+
+>>> Executando com tests/board_100.in (4)
+Tempo (seq): 0.002558946609497070312500
+Tempo (conc): 0.026350975036621093750000
+
+>>> Executando com tests/board_100.in (5)
+Tempo (seq): 0.002614021301269531250000
+Tempo (conc): 0.003149986267089843750000
+
+Médias para board_100.in -> Sequencial: 0.00259656906127929670152765 s | Concorrente: 0.00805196762084960972194470 s
+--------------------------------------------
+
+>>> Board: board_1000.in
+
+>>> Executando com tests/board_1000.in (1)
+Tempo (seq): 0.258872985839843750000000
+Tempo (conc): 0.065685987472534179687500
+
+>>> Executando com tests/board_1000.in (2)
+Tempo (seq): 0.266658067703247070312500
+Tempo (conc): 0.065741062164306640625000
+
+>>> Executando com tests/board_1000.in (3)
+Tempo (seq): 0.267287969589233398437500
+Tempo (conc): 0.065299987792968750000000
+
+>>> Executando com tests/board_1000.in (4)
+Tempo (seq): 0.271980047225952148437500
+Tempo (conc): 0.065645933151245117187500
+
+>>> Executando com tests/board_1000.in (5)
+Tempo (seq): 0.273149967193603515625000
+Tempo (conc): 0.065998077392578125000000
+
+Médias para board_1000.in -> Sequencial: 0.26758980751037597656250000 s | Concorrente: 0.06567420959472655694888488 s
+--------------------------------------------
+
+>>> Board: board_5000.in
+
+>>> Executando com tests/board_5000.in (1)
+Tempo (seq): 6.844054937362670898437500
+Tempo (conc): 1.631676912307739257812500
+
+>>> Executando com tests/board_5000.in (2)
+Tempo (seq): 6.957829952239990234375000
+Tempo (conc): 1.556586027145385742187500
+
+>>> Executando com tests/board_5000.in (3)
+Tempo (seq): 6.961061954498291015625000
+Tempo (conc): 1.704741001129150390625000
+
+>>> Executando com tests/board_5000.in (4)
+Tempo (seq): 6.946948051452636718750000
+Tempo (conc): 1.620640993118286132812500
+
+>>> Executando com tests/board_5000.in (5)
+Tempo (seq): 6.968894958496093750000000
+Tempo (conc): 1.583661794662475585937500
+
+Médias para board_5000.in -> Sequencial: 6.93575797080993616816613212 s | Concorrente: 1.61946134567260746628392099 s
+--------------------------------------------
+
+============================================
+Fim da execução — resultados registrados em segundos.

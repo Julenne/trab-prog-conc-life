@@ -1,0 +1,75 @@
+# Makefile de desempenho na pasta "life"
+
+# Número de repetições para cada teste
+REPS = 5
+
+# Diretórios
+CONC_DIR = concorrente
+SEQ_DIR  = sequencial
+TEST_DIR = tests
+
+# Executáveis
+CONC_BIN = $(CONC_DIR)/life-conc
+SEQ_BIN  = $(SEQ_DIR)/life-seq
+
+# Compilador e flags
+CC = gcc
+CFLAGS = -O3
+
+# Lista de testes
+TESTS = $(wildcard $(TEST_DIR)/board_*.in)
+
+# Arquivo de resultados
+RESULTS = $(TEST_DIR)/resultados.txt
+
+# Alvo padrão
+all: $(CONC_BIN) $(SEQ_BIN)
+
+# Compilar versão concorrente
+$(CONC_BIN): $(CONC_DIR)/life-conc.c $(CONC_DIR)/timer.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+# Compilar versão sequencial
+$(SEQ_BIN): $(SEQ_DIR)/life-seq.c $(SEQ_DIR)/timer.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+# Executar ambos para cada teste, salvar saídas e calcular médias
+run: all
+	@echo "============================================"
+	@echo "     JOGO DA VIDA — TESTES AUTOMATIZADOS"
+	@echo "============================================"
+	@echo "Relatório salvo em: $(RESULTS)"
+	@echo "============================================" > $(RESULTS)
+	@date >> $(RESULTS)
+	@for test in $(TESTS); do \
+		board=$$(basename $$test); \
+		echo "" | tee -a $(RESULTS); \
+		echo ">>> Board: $$board" | tee -a $(RESULTS); \
+		seq_times=""; conc_times=""; \
+		for i in $(shell seq 1 $(REPS)); do \
+			echo "" | tee -a $(RESULTS); \
+			echo ">>> Executando com $$test ($$i)" | tee -a $(RESULTS); \
+			seq_out="$$( $(SEQ_BIN)  < $$test )"; \
+			conc_out="$$( $(CONC_BIN) < $$test )"; \
+			echo "$$seq_out"  | tee -a $(RESULTS); \
+			echo "$$conc_out" | tee -a $(RESULTS); \
+			seq_time="$$(  echo "$$seq_out"  | grep -Eo '[[:digit:]]+([.][[:digit:]]+)?' | tail -n1 )"; \
+			conc_time="$$( echo "$$conc_out" | grep -Eo '[[:digit:]]+([.][[:digit:]]+)?' | tail -n1 )"; \
+			seq_times="$$seq_times $$seq_time"; \
+			conc_times="$$conc_times $$conc_time"; \
+		done; \
+		seq_avg="$$( echo $$seq_times  | awk '{s=0;c=0; for(i=1;i<=NF;i++){ if($$i!=""){ s+= $$i; c++ }} if(c>0) printf("%.26f", s/c); else print "NA"}' )"; \
+		conc_avg="$$(echo $$conc_times | awk '{s=0;c=0; for(i=1;i<=NF;i++){ if($$i!=""){ s+= $$i; c++ }} if(c>0) printf("%.26f", s/c); else print "NA"}' )"; \
+		echo "" | tee -a $(RESULTS); \
+		echo "Médias para $$board -> Sequencial: $$seq_avg s | Concorrente: $$conc_avg s" | tee -a $(RESULTS); \
+		echo "--------------------------------------------" | tee -a $(RESULTS); \
+	done
+	@echo "" | tee -a $(RESULTS)
+	@echo "============================================" | tee -a $(RESULTS)
+	@echo "Fim da execução — resultados registrados em segundos." | tee -a $(RESULTS)
+
+
+# Limpeza
+clean:
+	rm -f $(CONC_BIN) $(SEQ_BIN) $(RESULTS)
+	find . -name "*.o" -delete
