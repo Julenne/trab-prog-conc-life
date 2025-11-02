@@ -1,0 +1,65 @@
+# Makefile completo para Jogo da Vida com JSON usando jq
+# Funciona no Git Bash / WSL / Linux
+
+# Forçar uso do bash
+SHELL := /bin/bash
+
+# Diretórios
+CONC_DIR = concorrente
+SEQ_DIR  = sequencial
+TEST_DIR = tests
+
+# Executáveis
+CONC_BIN = $(CONC_DIR)/life-conc
+SEQ_BIN  = $(SEQ_DIR)/life-seq
+
+# Compilador e flags
+CC = gcc
+CFLAGS = -O3 -std=c99
+
+# Lista de testes
+TESTS = $(wildcard $(TEST_DIR)/board_*.in)
+
+# Arquivos de log/resultados
+RESULTS_TXT = $(TEST_DIR)/results.txt
+RESULTS_JSON = $(TEST_DIR)/results.json
+
+# Alvo padrão: compilar ambos
+all: $(CONC_BIN) $(SEQ_BIN)
+
+# Compilar versão concorrente
+$(CONC_BIN): $(CONC_DIR)/life-conc.c $(CONC_DIR)/timer.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+# Compilar versão sequencial
+$(SEQ_BIN): $(SEQ_DIR)/life-seq.c $(SEQ_DIR)/timer.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+# Executar testes e salvar em TXT
+run: all
+	@echo "============================================"; \
+	for test in $(TESTS); do \
+		echo ">>> Executando com $$test"; \
+		echo "---- SEQUENCIAL ----"; \
+		$(SEQ_BIN) < $$test; \
+		echo "---- CONCORRENTE ----"; \
+		$(CONC_BIN) < $$test; \
+	done | tee $(RESULTS_TXT)
+
+# Executar testes e salvar em JSON usando jq
+run-json: all
+	@echo '{"tests": [' > $(RESULTS_JSON); \
+	first=1; \
+	for test in $(TESTS); do \
+		if [ $$first -eq 1 ]; then first=0; else echo "," >> $(RESULTS_JSON); fi; \
+		seq_out=$$( $(SEQ_BIN) < $$test | jq -Rs . ); \
+		conc_out=$$( $(CONC_BIN) < $$test | jq -Rs . ); \
+		input_json=$$(printf '%s' "$$test" | jq -Rs . ); \
+		printf '  {"input": %s, "sequencial_output": %s, "concorrente_output": %s}' "$$input_json" "$$seq_out" "$$conc_out" >> $(RESULTS_JSON); \
+	done; \
+	echo '\n]}' >> $(RESULTS_JSON)
+
+# Limpeza
+clean:
+	rm -f $(CONC_BIN) $(SEQ_BIN) $(RESULTS_TXT) $(RESULTS_JSON)
+	find . -name "*.o" -delete

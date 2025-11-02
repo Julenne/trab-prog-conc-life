@@ -13,3 +13,6 @@ Após isso basta rodar o comando no terminal, ainda na pasta \life:
 ```
 $make run
 ```
+Para avaliar a corretude basta rodar o script verificar_outputs.py com o seguinte comando na pasta \tests\results_corretude:
+```
+$ python verificar_outputs.py results_{steps}_{threads}.json
